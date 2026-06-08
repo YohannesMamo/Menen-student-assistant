@@ -35,7 +35,8 @@
     "slideskit": "^0.1.1",
     "socket.io-client": "^4.7.4",
     "tailwindcss": "^3.4.1",
-    "zustand": "^5.0.13"
+    "zustand": "^5.0.13",
+    "megajs": "^1.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
