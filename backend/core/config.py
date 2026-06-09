@@ -1,15 +1,13 @@
-# File: core/config.py
-from pydantic_settings import BaseSettings
+import os
 
-class Settings(BaseSettings):
-    APP_NAME: str = "Menen Student Assistant API"
-    DATABASE_URL: str
-    BACKEND_URL: str = "http://localhost:8000"
-    TEXTBOOKS_PATH: str = "Textbooks" # <-- Global path to your PDFs
+# 1. Pull the raw environment variable from your Pxxl dashboard
+raw_db_url = os.getenv("DATABASE_URL")
 
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
+# 2. Safety check: Force string manipulation to replace the prefix for SQLAlchemy 2.0
+if raw_db_url and raw_db_url.startswith("postgres://"):
+    DATABASE_URL = raw_db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+else:
+    DATABASE_URL = raw_db_url
 
-# This creates a single, global instance of your settings to be used throughout the app
-settings = Settings()
+# 3. Pass your cleaned DATABASE_URL into your SQLAlchemy create_engine function
+# engine = create_engine(DATABASE_URL)
