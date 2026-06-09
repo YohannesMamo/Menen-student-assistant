@@ -1,4 +1,12 @@
 import os
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    # Your other pydantic settings variables go here (e.g. PROJECT_NAME, SECRET_KEY, etc.)
+    DATABASE_URL: str = ""
+
+    class Config:
+        env_file = ".env"
 
 # 1. Pull the raw environment variable from your Pxxl dashboard
 raw_db_url = os.getenv("DATABASE_URL")
@@ -9,5 +17,7 @@ if raw_db_url and raw_db_url.startswith("postgres://"):
 else:
     DATABASE_URL = raw_db_url
 
-# 3. Pass your cleaned DATABASE_URL into your SQLAlchemy create_engine function
-# engine = create_engine(DATABASE_URL)
+# 3. Create the global settings object and override its DATABASE_URL property (CRUCIAL LINE)
+settings = Settings()
+if DATABASE_URL:
+    settings.DATABASE_URL = DATABASE_URL
