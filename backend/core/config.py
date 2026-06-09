@@ -2,22 +2,28 @@ import os
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    # Your other pydantic settings variables go here (e.g. PROJECT_NAME, SECRET_KEY, etc.)
     DATABASE_URL: str = ""
+    
+    # ◄ Add these four lines exactly so Pydantic allows them
+    secret_key: str = ""
+    google_api_key: str = ""
+    environment: str = "production"
+    debug: bool = False
 
     class Config:
         env_file = ".env"
+        # Optional alternative bypass: 
+        # extra = "ignore"  # Uncomment this line if you want to silently ignore any future extra variables
 
-# 1. Pull the raw environment variable from your Pxxl dashboard
+# Pull the raw environment variable from your Pxxl dashboard
 raw_db_url = os.getenv("DATABASE_URL")
 
-# 2. Safety check: Force string manipulation to replace the prefix for SQLAlchemy 2.0
 if raw_db_url and raw_db_url.startswith("postgres://"):
     DATABASE_URL = raw_db_url.replace("postgres://", "postgresql+psycopg2://", 1)
 else:
     DATABASE_URL = raw_db_url
 
-# 3. Create the global settings object and override its DATABASE_URL property (CRUCIAL LINE)
+# Instantiate the global settings object
 settings = Settings()
 if DATABASE_URL:
     settings.DATABASE_URL = DATABASE_URL
