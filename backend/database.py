@@ -18,5 +18,13 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 # 4. Instantiate the session mapping
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# 5. Define the base model structure if other files import it from here
+# 5. Define the base model structure
 Base = declarative_base()
+
+# 6. ADD THIS FUNCTION (The missing link your routes are looking for)
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
