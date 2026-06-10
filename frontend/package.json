@@ -57,4 +57,7 @@
     "typescript-eslint": "^8.57.0",
     "vite": "^6.0.0"
   }
+  "engines": {
+  "node": "20.x"
+}
 }
