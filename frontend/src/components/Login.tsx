@@ -21,17 +21,21 @@ const Login: React.FC = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-	console.log("STEP 1: Submit button clicked successfully!");
+    console.log("STEP 1: Submit button clicked successfully!");
     console.log("STEP 2: Checking values:", formData);
 
     setError('');
     setLoading(true);
 
     try {
-      const response = await fetch(`/api/auth/login`, {
-	  console.log("STEP 3: Dynamic Target URL is:", `${apiUrl}/api/auth/login`);
+      // 1. Properly pull your live backend absolute url configuration
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      console.log("STEP 3: Dynamic Target URL is:", `${apiUrl}/api/auth/login`);
+
+      // 2. Clear out any relative routing endpoints to point directly to your live backend domain
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -39,7 +43,8 @@ const Login: React.FC = () => {
           Password: formData.password
         })
       });
-Console.log("STEP 4: Fetch response received!", response.status);
+
+      console.log("STEP 4: Fetch response received!", response.status);
       const data = await response.json();
 
       if (!response.ok) {
@@ -52,8 +57,8 @@ Console.log("STEP 4: Fetch response received!", response.status);
         role: data.role,
         studentId: data.studentId,
         firstName: data.firstName,
-		 isProfileComplete: data.isProfileComplete,
-      subscriptionStatus: data.subscriptionStatus 
+        isProfileComplete: data.isProfileComplete,
+        subscriptionStatus: data.subscriptionStatus 
       });
 
       // Navigate to complete profile if not complete, else dashboard
@@ -64,13 +69,15 @@ Console.log("STEP 4: Fetch response received!", response.status);
       }
       
     } catch (err: any) {
+      // 3. Fixed to match the 'err' argument case correctly
       setError(err.message);
-	  alert("System caught a silent error: " + error.message);
-       console.log("CRASH LOG:", error);
+      alert("System caught a silent error: " + err.message);
+      console.log("CRASH LOG:", err);
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     // ... rest of your JSX remains the same
