@@ -21,7 +21,7 @@ const Login: React.FC = () => {
     });
   };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+      const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("STEP 1: Submit button clicked successfully!");
     console.log("STEP 2: Checking values:", formData);
@@ -30,17 +30,21 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      // 1. Properly pull your live backend absolute url configuration
-      const apiUrl = import.meta.env.VITE_API_URL || '';
-      console.log("STEP 3: Dynamic Target URL is:", `${apiUrl}/api/auth/login`);
+      // 1. Clean up trailing slashes dynamically to fix the '//api' error
+      let apiUrl = import.meta.env.VITE_API_URL || '';
+      if (apiUrl.endsWith('/')) {
+        apiUrl = apiUrl.slice(0, -1);
+      }
+      
+      console.log("STEP 3: Fixed Target URL is:", `${apiUrl}/api/auth/login`);
 
-      // 2. Clear out any relative routing endpoints to point directly to your live backend domain
+      // 2. Explicitly map your lowercase form states to the required uppercase keys
       const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          Email: formData.email,
-          Password: formData.password
+          Email: formData.email,      // Ensures the real value is passed to 'Email'
+          Password: formData.password // Ensures the real value is passed to 'Password'
         })
       });
 
@@ -61,7 +65,6 @@ const Login: React.FC = () => {
         subscriptionStatus: data.subscriptionStatus 
       });
 
-      // Navigate to complete profile if not complete, else dashboard
       if (!data.isProfileComplete) {
         navigate('/complete-profile');
       } else {
@@ -69,14 +72,13 @@ const Login: React.FC = () => {
       }
       
     } catch (err: any) {
-      // 3. Fixed to match the 'err' argument case correctly
       setError(err.message);
-      alert("System caught a silent error: " + err.message);
       console.log("CRASH LOG:", err);
     } finally {
       setLoading(false);
     }
   };
+
 
 
   return (
