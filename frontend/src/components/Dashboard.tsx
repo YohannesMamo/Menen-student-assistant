@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, X } from 'lucide-react';
+import { apiFetch } from '../utils/api';
 
 // Import the wizard component (put it in the same folder or adjust path)
 import TextbookToQuizWizard from './TextbookToQuizWizard';

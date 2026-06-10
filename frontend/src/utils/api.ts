@@ -1,24 +1,27 @@
 // src/utils/api.ts
-const API_BASE = '/api';
+let baseUrl = import.meta.env.VITE_API_URL || '';
+
+// Automatically strip trailing slashes once for the entire application lifecycle
+if (baseUrl.endsWith('/')) {
+  baseUrl = baseUrl.slice(0, -1);
+}
+
+export const API_BASE_URL = baseUrl;
 
 export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
-  const token = localStorage.getItem('token');   // or get from your AuthContext
-
-  const config: RequestInit = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
-    ...options,
+  // Ensure the endpoint starts with a slash
+  const formattedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  
+  // Combine into an absolute URL automatically
+  const absoluteUrl = `${API_BASE_URL}${formattedEndpoint}`;
+  
+  // Automatically inject common headers like JSON content type and authorization tokens
+  const token = localStorage.getItem('token'); // Adjust key to match your auth system
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token && { 'Authorization': `Bearer ${token}` }),
+    ...options.headers,
   };
 
-  const response = await fetch(`${API_BASE}${endpoint}`, config);
-
-  if (response.status === 401) {
-    // Optional: handle token expired → logout
-    console.warn('Token expired or invalid');
-    // You can call logout() from context here if you want
-  }
-
-  return response;
+  return fetch(absoluteUrl, { ...options, headers });
 };

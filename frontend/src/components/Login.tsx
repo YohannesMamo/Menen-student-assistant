@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../utils/api';
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -39,7 +40,7 @@ const Login: React.FC = () => {
       console.log("STEP 3: Fixed Target URL is:", `${apiUrl}/api/auth/login`);
 
       // 2. Explicitly map your lowercase form states to the required uppercase keys
-      const response = await fetch(`${apiUrl}/api/auth/login`, {
+      const response = await  apiFetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
