@@ -23,11 +23,15 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+	console.log("STEP 1: Submit button clicked successfully!");
+    console.log("STEP 2: Checking values:", formData);
+
     setError('');
     setLoading(true);
 
     try {
       const response = await fetch(`/api/auth/login`, {
+	  console.log("STEP 3: Dynamic Target URL is:", `${apiUrl}/api/auth/login`);
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -35,7 +39,7 @@ const Login: React.FC = () => {
           Password: formData.password
         })
       });
-
+Console.log("STEP 4: Fetch response received!", response.status);
       const data = await response.json();
 
       if (!response.ok) {
@@ -61,6 +65,8 @@ const Login: React.FC = () => {
       
     } catch (err: any) {
       setError(err.message);
+	  alert("System caught a silent error: " + error.message);
+       console.log("CRASH LOG:", error);
     } finally {
       setLoading(false);
     }
