@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -27,7 +28,7 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`/api/auth/login`, {
+      const response = await axios.post(`/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
