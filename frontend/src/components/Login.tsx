@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../utils/api';
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -21,21 +22,34 @@ const Login: React.FC = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+      const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("STEP 1: Submit button clicked successfully!");
+    console.log("STEP 2: Checking values:", formData);
+
     setError('');
     setLoading(true);
 
     try {
-      const response = await fetch(`/api/auth/login`, {
+      // 1. Clean up trailing slashes dynamically to fix the '//api' error
+      let apiUrl = import.meta.env.VITE_API_URL || '';
+      if (apiUrl.endsWith('/')) {
+        apiUrl = apiUrl.slice(0, -1);
+      }
+      
+      console.log("STEP 3: Fixed Target URL is:", `${apiUrl}/api/auth/login`);
+
+      // 2. Explicitly map your lowercase form states to the required uppercase keys
+      const response = await  apiFetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          Email: formData.email,
-          Password: formData.password
+          Email: formData.email,      // Ensures the real value is passed to 'Email'
+          Password: formData.password // Ensures the real value is passed to 'Password'
         })
       });
 
+      console.log("STEP 4: Fetch response received!", response.status);
       const data = await response.json();
 
       if (!response.ok) {
@@ -48,11 +62,10 @@ const Login: React.FC = () => {
         role: data.role,
         studentId: data.studentId,
         firstName: data.firstName,
-		 isProfileComplete: data.isProfileComplete,
-      subscriptionStatus: data.subscriptionStatus 
+        isProfileComplete: data.isProfileComplete,
+        subscriptionStatus: data.subscriptionStatus 
       });
 
-      // Navigate to complete profile if not complete, else dashboard
       if (!data.isProfileComplete) {
         navigate('/complete-profile');
       } else {
@@ -61,10 +74,13 @@ const Login: React.FC = () => {
       
     } catch (err: any) {
       setError(err.message);
+      console.log("CRASH LOG:", err);
     } finally {
       setLoading(false);
     }
   };
+
+
 
   return (
     // ... rest of your JSX remains the same
