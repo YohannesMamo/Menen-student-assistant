@@ -320,8 +320,8 @@ export default function StudentStatusDashboard() {
         };
 
         const [stateRes, interRes] = await Promise.all([
-          fetch(`${API_BASE}/students/learning-state`, { headers }),
-          fetch(`${API_BASE}/students/interventions`, { headers })
+          axios.get(`${API_BASE}/students/learning-state`, { headers }),
+          axios.get(`${API_BASE}/students/interventions`, { headers })
         ]);
 
         if (!stateRes.ok || !interRes.ok) throw new Error('API connection failed');
