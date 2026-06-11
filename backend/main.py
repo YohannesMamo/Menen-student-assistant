@@ -61,9 +61,11 @@ chat.init_socketio(sio)
 # ==================== CORS MIDDLEWARE ====================
 origins = [
     "https://menen-oshs-app.pxxl.click",
-    "https://menenoshs-app.pxxl.click",  # Removed trailing slash, added missing comma above
+    "https://menenoshs-app.pxxl.click",
     "http://localhost:3000",
     "http://localhost:5173",
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
