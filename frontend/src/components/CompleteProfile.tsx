@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiFetch } from '../utils/api';
 import { 
   User, GraduationCap, Phone, Briefcase, Heart, Save, 
   ChevronRight, ChevronLeft, Sparkles, CheckCircle, 
@@ -99,21 +98,14 @@ const CompleteProfile: React.FC = () => {
     }
   }, [user, isAuthenticated]);
 
-    // Fetch grades from database
+  // Fetch grades from database
   useEffect(() => {
     const fetchGrades = async () => {
       const token = getToken();
       if (!token) return;
       
       try {
-        // 1. Fetch and clean up your live backend domain variable
-        let apiUrl = import.meta.env.VITE_API_URL || '';
-        if (apiUrl.endsWith('/')) {
-          apiUrl = apiUrl.slice(0, -1);
-        }
-
-        // 2. Attach the absolute prefix to the endpoint path
-        const response = await fetch(`${apiUrl}/api/students/grades`, {
+        const response = await fetch('/api/students/grades', {
           headers: { 
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -125,7 +117,6 @@ const CompleteProfile: React.FC = () => {
           setAvailableGrades(grades);
           console.log('Grades fetched:', grades);
         } else {
-          console.log('Grades server returned non-ok status:', response.status);
           // Fallback grades
           setAvailableGrades([
             {gradeId: 'HIG9A', gradeDescription: 'Grade 9'},
@@ -135,7 +126,7 @@ const CompleteProfile: React.FC = () => {
           ]);
         }
       } catch (error) {
-        console.log('Could not fetch grades, using defaults. Catch error:', error);
+        console.log('Could not fetch grades, using defaults');
         setAvailableGrades([
           {gradeId: 'HIG9A', gradeDescription: 'Grade 9'},
           {gradeId: 'HIG10A', gradeDescription: 'Grade 10'},
@@ -147,7 +138,6 @@ const CompleteProfile: React.FC = () => {
       
     fetchGrades();
   }, []);
-
 
   // Fetch existing student data from backend using student ID
   useEffect(() => {
@@ -166,14 +156,7 @@ const CompleteProfile: React.FC = () => {
         setError(null);
         console.log(`Fetching profile for student ID: ${studentId}`);
         
-         // 1. Fetch and dynamically clean up your live backend domain variable
-        let apiUrl = import.meta.env.VITE_API_URL || '';
-        if (apiUrl.endsWith('/')) {
-          apiUrl = apiUrl.slice(0, -1);
-        }
-
-        // 2. Attach the absolute prefix to the profile endpoint path
-        const response = await fetch(`${apiUrl}/api/profile/${studentId}`, {
+        const response = await fetch(`/api/profile/${studentId}`, {
           headers: { 
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -360,15 +343,8 @@ const CompleteProfile: React.FC = () => {
     
     console.log('Submitting profile update:', updateData);
     
-        try {
-      // 1. Fetch and dynamically clean up your live backend domain variable
-      let apiUrl = import.meta.env.VITE_API_URL || '';
-      if (apiUrl.endsWith('/')) {
-        apiUrl = apiUrl.slice(0, -1);
-      }
-
-      // 2. Attach the absolute prefix to the profile PUT endpoint path
-      const response = await fetch(`${apiUrl}/api/profile/${studentId}`, {
+    try {
+      const response = await fetch(`/api/profile/${studentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -394,7 +370,6 @@ const CompleteProfile: React.FC = () => {
       setError('Network error. Please check your connection and try again.');
       setIsSaving(false);
     }
-
   };
 
   const progress = (completedSections.size / sections.length) * 100;

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, X } from 'lucide-react';
-import { apiFetch } from '../utils/api';
 
 // Import the wizard component (put it in the same folder or adjust path)
 import TextbookToQuizWizard from './TextbookToQuizWizard';
@@ -49,7 +48,7 @@ const CombinedDashboard = () => {
   const [showQuizWizard, setShowQuizWizard] = useState(false);
   const [selectedTextbookForWizard, setSelectedTextbookForWizard] = useState<QuizWizardTextbook | null>(null);
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -60,14 +59,7 @@ const CombinedDashboard = () => {
           return;
         }
 
-        // 1. Fetch and dynamically clean up your live backend domain variable
-        let apiUrl = import.meta.env.VITE_API_URL || '';
-        if (apiUrl.endsWith('/')) {
-          apiUrl = apiUrl.slice(0, -1);
-        }
-
-        // 2. Attach the absolute prefix to the Axios request path
-        const response = await axios.get(`${apiUrl}/api/dashboard`, {
+        const response = await axios.get('/api/dashboard', {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -85,7 +77,6 @@ const CombinedDashboard = () => {
 
     fetchDashboardData();
   }, []);
-
 
   const handleLogout = () => {
     localStorage.clear();

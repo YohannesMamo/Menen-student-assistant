@@ -25,6 +25,17 @@ import {ChatHub} from './components/ChatHub';
 import CompleteProfile from "./components/CompleteProfile";
 
 import { ChatProvider } from './contexts/ChatContext';
+import axios from 'axios';
+
+// 1. Fetch and clean up your live backend domain variable globally
+let globalApiUrl = import.meta.env.VITE_API_URL || '';
+if (globalApiUrl.endsWith('/')) {
+  globalApiUrl = globalApiUrl.slice(0, -1);
+}
+
+// 2. Set the global base URL for every single standard axios call in the app
+axios.defaults.baseURL = globalApiUrl;
+
 
 //const StudyHubWrapper = () => {
 //  return <StudyHub />;
