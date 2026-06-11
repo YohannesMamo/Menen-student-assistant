@@ -28,39 +28,50 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/login', {
-		  Email: formData.email,
-		  Password: formData.password
-		});
+  // 1. Construct a clean, un-serialized raw data object
+  const loginPayload = {
+    Email: formData.email,
+    Password: formData.password
+  };
 
-      const data = await response.json();
+  console.log("Sending clean object to backend:", loginPayload);
 
-      if (!response.ok) {
-        throw new Error(data.detail || data.message || 'Login failed');
-      }
+  // 2. Explicitly force Axios to use standard application/json headers
+  const response = await axios({
+    url: '/api/auth/login',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    data: loginPayload // 👈 Axios handles serialization automatically here
+  });
 
-      login(data.token, {
-        userId: data.userId,
-        email: data.email,
-        role: data.role,
-        studentId: data.studentId,
-        firstName: data.firstName,
-		 isProfileComplete: data.isProfileComplete,
-      subscriptionStatus: data.subscriptionStatus 
-      });
+  const data = response.data;
+  console.log("Login successful! Token acquired:", data.token);
 
-      // Navigate to complete profile if not complete, else dashboard
-      if (!data.isProfileComplete) {
-        navigate('/complete-profile');
-      } else {
-        navigate('/dashboard');
-      }
-      
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+  login(data.token, {
+    userId: data.userId,
+    email: data.email,
+    role: data.role,
+    studentId: data.studentId,
+    firstName: data.firstName,
+    isProfileComplete: data.isProfileComplete,
+    subscriptionStatus: data.subscriptionStatus 
+  });
+
+  if (!data.isProfileComplete) {
+    navigate('/complete-profile');
+  } else {
+    navigate('/dashboard');
+  }
+  
+} catch (err: any) {
+  const errorMsg = err.response?.data?.detail || err.response?.data?.message || err.message;
+  setError(errorMsg);
+  console.log("Login compilation error details:", err.response?.data);
+}
+
   };
 
   return (
