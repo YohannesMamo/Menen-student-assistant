@@ -1,0 +1,1 @@
+-e "fastapi\nuvicorn\nsqlalchemy\npsycopg2-binary\npydantic\npython-dotenv" 
