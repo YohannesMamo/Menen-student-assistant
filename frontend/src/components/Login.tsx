@@ -28,14 +28,10 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          Email: formData.email,
-          Password: formData.password
-        })
-      });
+      const response = await axios.post('/api/auth/login', {
+		  Email: formData.email,
+		  Password: formData.password
+		});
 
       const data = await response.json();
 
