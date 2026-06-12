@@ -1,2 +1,0 @@
-# Create runtime.txt in your backend folder
-echo "python-3.11" > runtime.txt

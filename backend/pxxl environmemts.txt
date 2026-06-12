@@ -1,7 +1,0 @@
-Database
-pxxldb_mpoi9cjh870dc62
-Username
-pxxluser_mpoi9cjgf49a479
-postgres://pxxluser_mpoi9cjgf49a479:15db1eb00b182b2c29cc376112a91ecba403026be964928f2313af0f54c874be@tg2ppu2hywgn5n13xfv8kau8:5432/pxxldb_mpoi9cjh870dc62
-VITE_API_URL
-NEXT_PUBLIC_API_URL  https://menen-student-assistant.pxxl.click/
