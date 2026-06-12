@@ -59,10 +59,9 @@ const TextbookToQuizWizard: React.FC<TextbookToQuizWizardProps> = ({
           headers: { 'Authorization': `Bearer ${token}` },
         });
 
-        if (res.status === 401) throw new Error("Session expired.");
-        if (!res.ok) throw new Error("Failed to load chapters");
+       const data = res.data;
 
-        const data: Chapter[] = await res.json();
+        
         setChapters(data);
       } catch (err: any) {
         setError(err.message || "Failed to load chapters");
@@ -84,7 +83,7 @@ const TextbookToQuizWizard: React.FC<TextbookToQuizWizardProps> = ({
         `${API_BASE_URL}/quizzes?textbookId=${encodeURIComponent(textbook.STBID)}&sectionId=${encodeURIComponent(section.stbSectionID)}`,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
-      const data = await res.json();
+      const data = res.data;
       setHasQuiz(data.hasQuiz === true);
     } catch (err) {
       console.error("Error checking quiz:", err);

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Phone, MapPin, Users, AlertCircle, Save, SkipForward } from 'lucide-react';
-import { apiFetch } from '../utils/api';
+
 
 const StudentRegistration: React.FC = () => {
   const navigate = useNavigate();

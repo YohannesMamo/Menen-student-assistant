@@ -21,7 +21,7 @@ import FormalExamPage from './components/FormalExamPage';
 import ExamReviewPage from './components/ExamReviewPage';
 import StudentStatusDashboard from "./components/StudentStatusDashboard";
 import {ChatHub} from './components/ChatHub';
-//import DevMenu from './components/DevMenu';
+
 import CompleteProfile from "./components/CompleteProfile";
 
 import { ChatProvider } from './contexts/ChatContext';
@@ -78,8 +78,8 @@ function App() {
       <Route path="*" element={<Navigate to="/" replace />} />
       
     </Routes>
-    {/* Dev Menu - only in development */}
-    {import.meta.env.DEV && <DevMenu />}
+    
+    
     </ChatProvider>
   );
   

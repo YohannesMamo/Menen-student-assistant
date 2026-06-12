@@ -18,6 +18,7 @@ interface Textbook {
   subject: string;
   grade: string;
   pdfUrl: string;
+  megaPdfUrl?: string;
 }
 
 interface Section {
@@ -63,7 +64,8 @@ const [pdfSourceAttempt, setPdfSourceAttempt] = useState<'local' | 'mega'>('loca
   // ==================== PDF STATE ====================
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [pdfLoading] = useState(false);
-  const [pdfError] = useState<string | null>(null);
+  const [pdfError, setPdfError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [, setTotalPages] = useState(0);
   const [, setScale] = useState(1.2);
@@ -601,7 +603,7 @@ useEffect(() => {
                 chunks.push(new Uint8Array(chunk));
               }
 
-              const pdfBlob = new Blob(chunks, { type: 'application/pdf' });
+              const pdfBlob = new Blob(chunks as BlobPart[], { type: 'application/pdf' });
               securePdfBlobUrl = URL.createObjectURL(pdfBlob);
               setPdfSourceAttempt('mega');
               console.log(`[Asset Pipeline] Success! ${targetFileName} completely decrypted via client browser memory.`);
@@ -681,8 +683,8 @@ useEffect(() => {
 
       // Build page map
       const pageMap = new Map<string, number>();
-      chapterGroups.forEach(ch => {
-        ch.sections.forEach(section => {
+      chapterGroups.forEach((ch: any) => {
+  ch.sections.forEach((section: any) => {
           pageMap.set(section.sectionId, section.startPage || 1);
         });
       });
