@@ -304,4 +304,4 @@ def get_grades(db: Session = Depends(get_db)):
       "gradeDescription": grade.GradeDescription
     }
     for grade in filtered_grades
-  ]"# Rebuild trigger" 
+]
