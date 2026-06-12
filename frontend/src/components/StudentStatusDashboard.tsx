@@ -2,10 +2,8 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-//=======JUST CLEANING==========
-
-import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { 
   Activity, 
   Brain, 
@@ -321,18 +319,17 @@ export default function StudentStatusDashboard() {
           'Content-Type': 'application/json'
         };
 
-        const [stateRes, interRes] = await Promise.all([
-          axios.get(`/api/students/learning-state`, { headers }),
-          axios.get(`/api/students/interventions`, { headers })
-        ]);
+        const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
-        if (!stateRes.ok || !interRes.ok) throw new Error('API connection failed');
+      const [stateRes, interRes] = await Promise.all([
+        axios.get(`${API_BASE}/students/learning-state`, { headers }),
+        axios.get(`${API_BASE}/students/interventions`, { headers })
+      ]);
 
-        //const stateData = await stateRes.json();
-        //const interData = await interRes.json();
-		const stateData = stateRes.data;
-        const interData = interRes.data;
-console.log("Raw backend structures matched:", StateData, interData);
+      // No .ok check needed – axios throws on error status
+      const stateData = stateRes.data;
+      const interData = interRes.data;
+
         setData(stateData);
         setInterventions(interData);
       } catch (err) {
