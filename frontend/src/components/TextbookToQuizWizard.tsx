@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, BookOpen, CheckCircle, Trophy, XCircle, AlertCircle, Loader } from 'lucide-react';
+import axios from 'axios'; // ?? Ensure Axios is imported at the top!
 
 interface Section {
   stbSectionID: string;
@@ -54,7 +55,7 @@ const TextbookToQuizWizard: React.FC<TextbookToQuizWizardProps> = ({
       }
 
       try {
-        const res = await fetch(`${API_BASE_URL}/textbooks/${encodeURIComponent(textbook.STBID)}/chapters`, {
+        const res = await axios.get(`${API_BASE_URL}/textbooks/${encodeURIComponent(textbook.STBID)}/chapters`, {
           headers: { 'Authorization': `Bearer ${token}` },
         });
 
@@ -79,7 +80,7 @@ const TextbookToQuizWizard: React.FC<TextbookToQuizWizardProps> = ({
     const token = localStorage.getItem('token');
 
     try {
-      const res = await fetch(
+      const res = await axios.get(
         `${API_BASE_URL}/quizzes?textbookId=${encodeURIComponent(textbook.STBID)}&sectionId=${encodeURIComponent(section.stbSectionID)}`,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
