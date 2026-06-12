@@ -47,7 +47,7 @@ interface QuizResult {
   }[];
 }
 
-const API_BASE = "/api/quizzes";
+const API_BASE = import.meta.env.VITE_API_URL || "/api/quizzes";
 
 const QuizPage: React.FC = () => {
   const { stbId, chapterId, sectionId } = useParams();

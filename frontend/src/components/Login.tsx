@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
-
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -24,52 +22,50 @@ const Login: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError('');
-  setLoading(true);
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
-  try {
-    const API_BASE = import.meta.env.VITE_API_URL || '/api';
-    const loginPayload = {
-      Email: formData.email,
-      Password: formData.password
-    };
+    try {
+      const response = await fetch(`/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          Email: formData.email,
+          Password: formData.password
+        })
+      });
 
-    console.log("Sending to backend:", loginPayload);
+      const data = await response.json();
 
-    const response = await axios.post(`${API_BASE}/auth/login`, loginPayload, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+      if (!response.ok) {
+        throw new Error(data.detail || data.message || 'Login failed');
       }
-    });
 
-    const data = response.data;
-    console.log("Login successful!", data.token);
+      login(data.token, {
+        userId: data.userId,
+        email: data.email,
+        role: data.role,
+        studentId: data.studentId,
+        firstName: data.firstName,
+		 isProfileComplete: data.isProfileComplete,
+      subscriptionStatus: data.subscriptionStatus 
+      });
 
-    login(data.token, {
-      userId: data.userId,
-      email: data.email,
-      role: data.role,
-      studentId: data.studentId,
-      firstName: data.firstName,
-      isProfileComplete: data.isProfileComplete,
-      subscriptionStatus: data.subscriptionStatus
-    });
-
-    if (!data.isProfileComplete) {
-      navigate('/complete-profile');
-    } else {
-      navigate('/dashboard');
+      // Navigate to complete profile if not complete, else dashboard
+      if (!data.isProfileComplete) {
+        navigate('/complete-profile');
+      } else {
+        navigate('/dashboard');
+      }
+      
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-  } catch (err: any) {
-    const errorMsg = err.response?.data?.detail || err.response?.data?.message || err.message;
-    setError(errorMsg);
-    console.error("Login error:", err.response?.data);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
+
   return (
     // ... rest of your JSX remains the same
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center p-4">

@@ -59,17 +59,11 @@ socket_app = socketio.ASGIApp(sio, app)
 chat.init_socketio(sio)
 
 # ==================== CORS MIDDLEWARE ====================
-origins = [
-    "https://menen-oshs-app.pxxl.click",
-    "https://menenoshs-app.pxxl.click",
-    "http://localhost:3000",
-    "http://localhost:5173",
-]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

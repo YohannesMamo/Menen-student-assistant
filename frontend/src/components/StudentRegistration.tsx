@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Phone, MapPin, Users, AlertCircle, Save, SkipForward } from 'lucide-react';
 
-
 const StudentRegistration: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);

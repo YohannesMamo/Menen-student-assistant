@@ -21,11 +21,10 @@ import FormalExamPage from './components/FormalExamPage';
 import ExamReviewPage from './components/ExamReviewPage';
 import StudentStatusDashboard from "./components/StudentStatusDashboard";
 import {ChatHub} from './components/ChatHub';
-
+//import DevMenu from './components/DevMenu';
 import CompleteProfile from "./components/CompleteProfile";
 
 import { ChatProvider } from './contexts/ChatContext';
-
 
 //const StudyHubWrapper = () => {
 //  return <StudyHub />;
@@ -78,7 +77,6 @@ function App() {
       <Route path="*" element={<Navigate to="/" replace />} />
       
     </Routes>
-    
     
     </ChatProvider>
   );

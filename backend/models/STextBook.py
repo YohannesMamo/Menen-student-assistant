@@ -17,4 +17,4 @@ class STextBook(Base):
     STBFormat = Column(String(50))
     ChapterCount = Column(Integer)
     SectionCount = Column(Integer)
-    
+    CloudFileID = Column(String(50))  # Fixed tab spacing and spelling typo

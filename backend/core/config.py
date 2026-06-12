@@ -1,29 +1,15 @@
-import os
+# File: core/config.py
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = ""
-    
-    # ◄ Add these four lines exactly so Pydantic allows them
-    secret_key: str = ""
-    google_api_key: str = ""
-    environment: str = "production"
-    debug: bool = False
+    APP_NAME: str = "Menen Student Assistant API"
+    DATABASE_URL: str
+    BACKEND_URL: str = "http://localhost:8000"
+    TEXTBOOKS_PATH: str = "Textbooks" # <-- Global path to your PDFs
 
     class Config:
         env_file = ".env"
-        # Optional alternative bypass: 
-        # extra = "ignore"  # Uncomment this line if you want to silently ignore any future extra variables
+        extra = "ignore"
 
-# Pull the raw environment variable from your Pxxl dashboard
-raw_db_url = os.getenv("DATABASE_URL")
-
-if raw_db_url and raw_db_url.startswith("postgres://"):
-    DATABASE_URL = raw_db_url.replace("postgres://", "postgresql+psycopg2://", 1)
-else:
-    DATABASE_URL = raw_db_url
-
-# Instantiate the global settings object
+# This creates a single, global instance of your settings to be used throughout the app
 settings = Settings()
-if DATABASE_URL:
-    settings.DATABASE_URL = DATABASE_URL

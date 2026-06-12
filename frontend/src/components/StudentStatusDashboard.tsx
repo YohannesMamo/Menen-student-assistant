@@ -2,7 +2,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-import axios from 'axios';
+
 import { useEffect, useState } from 'react';
 import { 
   Activity, 
@@ -319,16 +319,15 @@ export default function StudentStatusDashboard() {
           'Content-Type': 'application/json'
         };
 
-        const API_BASE = import.meta.env.VITE_API_URL || '/api';
+        const [stateRes, interRes] = await Promise.all([
+          fetch(`${API_BASE}/students/learning-state`, { headers }),
+          fetch(`${API_BASE}/students/interventions`, { headers })
+        ]);
 
-      const [stateRes, interRes] = await Promise.all([
-        axios.get(`${API_BASE}/students/learning-state`, { headers }),
-        axios.get(`${API_BASE}/students/interventions`, { headers })
-      ]);
+        if (!stateRes.ok || !interRes.ok) throw new Error('API connection failed');
 
-      // No .ok check needed – axios throws on error status
-      const stateData = stateRes.data;
-      const interData = interRes.data;
+        const stateData = await stateRes.json();
+        const interData = await interRes.json();
 
         setData(stateData);
         setInterventions(interData);

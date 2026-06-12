@@ -49,7 +49,7 @@ interface PresentationData {
 }
 
 // ==================== CONSTANTS ====================
-const API_BASE = "/api/study";
+const API_BASE = import.meta.env.VITE_API_URL || "/api/study";
 
 // ==================== MAIN COMPONENT ====================
 const StudyPage: React.FC = () => {
@@ -65,7 +65,7 @@ const [pdfSourceAttempt, setPdfSourceAttempt] = useState<'local' | 'mega'>('loca
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [pdfLoading] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [, setTotalPages] = useState(0);
   const [, setScale] = useState(1.2);
@@ -1026,7 +1026,7 @@ useEffect(() => {
 				  onLoad={updatePageInfo}
 				  onError={() => {
 					// If local source fails and we haven't tried MEGA yet
-					if (pdfSourceAttempt === 'local' && book.megaPdfUrl) {
+					if (pdfSourceAttempt === 'local' && book?.megaPdfUrl) {
 					  console.log('Local PDF failed, trying MEGA...');
 					  setPdfUrl(book.megaPdfUrl);
 					  setPdfSourceAttempt('mega');

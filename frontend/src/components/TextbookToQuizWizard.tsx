@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, BookOpen, CheckCircle, Trophy, XCircle, AlertCircle, Loader } from 'lucide-react';
-import axios from 'axios'; // ?? Ensure Axios is imported at the top!
 
 interface Section {
   stbSectionID: string;
@@ -26,7 +25,7 @@ interface TextbookToQuizWizardProps {
   onClose?: () => void;
 }
 
-const API_BASE_URL = '/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 const TextbookToQuizWizard: React.FC<TextbookToQuizWizardProps> = ({
   textbook,
@@ -55,13 +54,14 @@ const TextbookToQuizWizard: React.FC<TextbookToQuizWizardProps> = ({
       }
 
       try {
-        const res = await axios.get(`${API_BASE_URL}/textbooks/${encodeURIComponent(textbook.STBID)}/chapters`, {
+        const res = await fetch(`${API_BASE}/textbooks/${encodeURIComponent(textbook.STBID)}/chapters`, {
           headers: { 'Authorization': `Bearer ${token}` },
         });
 
-       const data = res.data;
+        if (res.status === 401) throw new Error("Session expired.");
+        if (!res.ok) throw new Error("Failed to load chapters");
 
-        
+        const data: Chapter[] = await res.json();
         setChapters(data);
       } catch (err: any) {
         setError(err.message || "Failed to load chapters");
@@ -79,11 +79,11 @@ const TextbookToQuizWizard: React.FC<TextbookToQuizWizardProps> = ({
     const token = localStorage.getItem('token');
 
     try {
-      const res = await axios.get(
-        `${API_BASE_URL}/quizzes?textbookId=${encodeURIComponent(textbook.STBID)}&sectionId=${encodeURIComponent(section.stbSectionID)}`,
+      const res = await fetch(
+        `${API_BASE}/quizzes?textbookId=${encodeURIComponent(textbook.STBID)}&sectionId=${encodeURIComponent(section.stbSectionID)}`,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
-      const data = res.data;
+      const data = await res.json();
       setHasQuiz(data.hasQuiz === true);
     } catch (err) {
       console.error("Error checking quiz:", err);

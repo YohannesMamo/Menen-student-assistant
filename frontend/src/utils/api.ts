@@ -1,20 +1,24 @@
-// src/services/api.ts
-import axios from 'axios';
+// src/utils/api.ts
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
-export const API_BASE = import.meta.env.VITE_API_URL || '/api';
+export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
+  const token = localStorage.getItem('token');   // or get from your AuthContext
 
-export const apiClient = axios.create({
-  baseURL: API_BASE,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+  const config: RequestInit = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    ...options,
+  };
 
-// Add token interceptor if you store it in localStorage
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const response = await fetch(`${API_BASE}${endpoint}`, config);
+
+  if (response.status === 401) {
+    // Optional: handle token expired → logout
+    console.warn('Token expired or invalid');
+    // You can call logout() from context here if you want
   }
-  return config;
-});
+
+  return response;
+};
