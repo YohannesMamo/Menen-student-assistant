@@ -328,8 +328,10 @@ export default function StudentStatusDashboard() {
 
         if (!stateRes.ok || !interRes.ok) throw new Error('API connection failed');
 
-        const stateData = await stateRes.json();
-        const interData = await interRes.json();
+        //const stateData = await stateRes.json();
+        //const interData = await interRes.json();
+		const stateData = stateRes.data;
+        const interData = interRes.data;
 console.log("Raw backend structures matched:", StateData, interData);
         setData(stateData);
         setInterventions(interData);
