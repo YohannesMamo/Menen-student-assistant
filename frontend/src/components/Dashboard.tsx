@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, X } from 'lucide-react';
-import { apiClient } from '../utils/api';  // adjust path to your api.ts
+
 
 // Import the wizard component (put it in the same folder or adjust path)
 import TextbookToQuizWizard from './TextbookToQuizWizard';
@@ -49,33 +49,31 @@ const CombinedDashboard = () => {
   const [showQuizWizard, setShowQuizWizard] = useState(false);
   const [selectedTextbookForWizard, setSelectedTextbookForWizard] = useState<QuizWizardTextbook | null>(null);
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        console.log('Token:', token);
-        if (!token) {
-          setError("Session expired. Please login again.");
-          setLoading(false);
-          return;
-        }
+ const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
-        const response = await apiClient.get('/dashboard');
-        
-        console.log('Dashboard response:', response.data);
-        console.log('Textbook progress:', response.data.textbookProgress);
-        console.log('Number of textbooks:', response.data.textbookProgress?.length);
-        setData(response.data);
-      } catch (err) {
-        console.error('Error fetching dashboard:', err);
-        setError("Unable to sync dashboard data.");
-      } finally {
+useEffect(() => {
+  const fetchDashboardData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError("Session expired. Please login again.");
         setLoading(false);
+        return;
       }
-    };
 
-    fetchDashboardData();
-  }, []);
+      const response = await axios.get(`${API_BASE}/dashboard`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setData(response.data);
+    } catch (err) {
+      setError("Unable to sync dashboard data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchDashboardData();
+}, []);
 
   const handleLogout = () => {
     localStorage.clear();
