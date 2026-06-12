@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { apiClient } from '../services/api';
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -37,15 +38,7 @@ const Login: React.FC = () => {
   console.log("Sending clean object to backend:", loginPayload);
 
   // 2. Explicitly force Axios to use standard application/json headers
-  const response = await axios({
-    url: '/api/auth/login',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    data: loginPayload // 👈 Axios handles serialization automatically here
-  });
+  const response = await apiClient.post('/auth/login', loginPayload);
 
   const data = response.data;
   console.log("Login successful! Token acquired:", data.token);

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, X } from 'lucide-react';
+import { apiClient } from '../services/api';  // adjust path to your api.ts
 
 // Import the wizard component (put it in the same folder or adjust path)
 import TextbookToQuizWizard from './TextbookToQuizWizard';
@@ -59,9 +60,7 @@ const CombinedDashboard = () => {
           return;
         }
 
-        const response = await axios.get('/api/dashboard', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await apiClient.get('/dashboard');
         
         console.log('Dashboard response:', response.data);
         console.log('Textbook progress:', response.data.textbookProgress);
