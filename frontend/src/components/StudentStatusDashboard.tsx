@@ -330,7 +330,7 @@ export default function StudentStatusDashboard() {
 
         const stateData = await stateRes.json();
         const interData = await interRes.json();
-
+console.log("Raw backend structures matched:", StateData, interData);
         setData(stateData);
         setInterventions(interData);
       } catch (err) {
